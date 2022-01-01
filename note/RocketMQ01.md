@@ -12,6 +12,10 @@
 
 3.数据收集：分布式系统会产生海量级数据，如：业务日志，监控数据，用户行为等，针对这些数据流进行实时或者批量采集汇总，然后对这些数据流进行大数据分析，这是当前互联网平台的必备技术，通过MQ完成此类数据收集是最好的选择
 
+4.数据分发：通过MQ可以让数据在多个系统之间进行沟通，数据的产生方不需要关心谁来使用数据，只需要将数据发送给消息队列，数据使用方直接在消息队列中直接获取数据即可
+
+![image](https://cdn.jsdelivr.net/gh/chen-xing/figure_bed_02/cdn/20220101093721754.png)
+
 ### RocketMQ基本概念
 
 一.消息标识
@@ -33,6 +37,32 @@ key:由用户指定的业务相关的唯一标识
 2.consumer
 
 消息消费者，负责消费消息，一个消息消费者会从broker服务器中获取到消息， 并对消息进行相关业务处理。消息消费者也都是以消费者组的形式出现的，消费者组是同一类消费者的集合，这类consumer消费的是同一个topic类型的消息，消费者组使得在消息消费方面，实现负载均衡和容错的目标变得非常容易。
+
+3.broker
+
+暂存和传输消息
+
+4.nameserver
+
+管理broker，相当于注册中心
+
+5.topic
+
+区分消息的种类，一个发送者发送消息给一个或者多个topic，一个消息的接收者可以订阅一个或者多个topic消息
+
+6.message queue
+
+相当于是topic的分区，用于并行发送和接收消息
+
+### 集群特点
+
+nameserver是一个无状态的节点，可以集群部署，节点之间没有任何信息同步
+
+broker部署相对复杂，broker分为master和slave，一个master对应多个slave，但是一个slave只能对应一个master，master与slave之间的对应关系通过指定相同的brokername，不同的brokerID来定义，brokerid为0表示master，非0表示slave，master‘也可以部署多个，每个broker与nameserver集群中的所有节点建立长连接，定时注册topic信息到所有的nameserver
+
+producer与nameserver集群中的其中一个节点（随机选择）建立长连接，定期从nameserver取topic路由信息，并向提供topic服务的master建立长连接，且定时向master发送心跳，producer完全无状态，可以集群部署
+
+consumer与nameserver集群中的其中一个节点建立长连接，定期从nameserver中取topic路由信息，并向提供topic服务的master，slave建立长连接，且定时向master，slave发送心跳，consumer既可以从master订阅消息，也可以从slave订阅消息，订阅规则由broker配置决定
 
 
 
