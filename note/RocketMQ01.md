@@ -64,5 +64,24 @@ producer与nameserver集群中的其中一个节点（随机选择）建立长�
 
 consumer与nameserver集群中的其中一个节点建立长连接，定期从nameserver中取topic路由信息，并向提供topic服务的master，slave建立长连接，且定时向master，slave发送心跳，consumer既可以从master订阅消息，也可以从slave订阅消息，订阅规则由broker配置决定
 
+### RocketMQ集群启动命令
 
+~~~shell
+首先分别在192.168.190.136和192.168.190.137启动NameServer
+nohup sh mqnamesrv &
+
+在192.168.190.136上启动master1和slave2
+nohup sh mqbroker -c /mydata/rocketmq/rocketmq-all-4.4.0-bin-release/conf/2m-2s-sync/broker-a.properties &
+nohup sh mqbroker -c /mydata/rocketmq/rocketmq-all-4.4.0-bin-release/conf/2m-2s-sync/broker-b-s.properties &
+
+在192.168.190.137上启动master2和slave1
+nohup sh mqbroker -c /mydata/rocketmq/rocketmq-all-4.4.0-bin-release/conf/2m-2s-sync/broker-b.properties &
+nohup sh mqbroker -c /mydata/rocketmq/rocketmq-all-4.4.0-bin-release/conf/2m-2s-sync/broker-a-s.properties &
+
+~~~
+
+~~~wiki
+排坑：在对应的broker配置文件中，一定要加上虚拟机的外网IP，即可以在另一台机器上进行访问，比如同一个局域网下可以访问的192.168.190.136这种ip，这样本地的Java代码才能连接到rocketmq集群。
+在配置文件中配置brokerIP1=192.168.190.136 信息
+~~~
 
