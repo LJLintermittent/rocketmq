@@ -25,7 +25,8 @@ public class Producer {
         producer.start();
         List<OrderStep> orderSteps = OrderStep.buildOrders();
         for (int i = 0; i < orderSteps.size(); i++) {
-            Message message = new Message("ordertopic", "order", "i" + i, orderSteps.get(i).toString().getBytes());
+            String body = orderSteps.get(i) + "";
+            Message message = new Message("ordertopic", "order", "i" + i, body.getBytes());
             SendResult sendResult = producer.send(message, new MessageQueueSelector() {
                 /**
                  * 控制顺序消费，需要把同一个订单id的消息发送往同一个队列中来控制顺序
