@@ -1,4 +1,4 @@
-package com.learn.rocketmq.base.consumer;
+package com.learn.rocketmq.base.producer;
 
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Description:
  * date: 2022/1/1 18:47
- * Package: com.learn.rocketmq.base.consumer
+ * Package: com.learn.rocketmq.base.producer
  *
  * @author 李佳乐
  * @email 18066550996@163.com
